@@ -39,34 +39,32 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 exports.__esModule = true;
-var product_1 = require("../models/product");
+var user_1 = require("../models/user");
 var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-var shopping = new product_1.Shopping();
-var index = function (_req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var products;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, shopping.index()];
-            case 1:
-                products = _a.sent();
-                res.json(products);
-                return [2 /*return*/];
-        }
-    });
-}); };
-var show = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var id, products, err_1;
+var shopping = new user_1.Shopping();
+var index = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var authorizationHeader, token, users, err_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                id = parseInt(req.params.id);
+                try {
+                    console.log("Here");
+                    authorizationHeader = req.headers.authorization;
+                    token = authorizationHeader.split(' ')[1];
+                    jsonwebtoken_1["default"].verify(token, process.env.TOKEN_SECRET);
+                }
+                catch (err) {
+                    res.status(401);
+                    res.json('Access denied, invalid token');
+                    return [2 /*return*/];
+                }
                 _a.label = 1;
             case 1:
                 _a.trys.push([1, 3, , 4]);
-                return [4 /*yield*/, shopping.show(id)];
+                return [4 /*yield*/, shopping.index()];
             case 2:
-                products = _a.sent();
-                res.json(products);
+                users = _a.sent();
+                res.json(users);
                 return [3 /*break*/, 4];
             case 3:
                 err_1 = _a.sent();
@@ -77,15 +75,12 @@ var show = function (req, res) { return __awaiter(void 0, void 0, void 0, functi
         }
     });
 }); };
-var create = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var Prod, authorizationHeader, token, product, err_2;
+var show = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var username, authorizationHeader, token, Users, err_2;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                Prod = {
-                    name: req.body.name,
-                    price: parseFloat(req.body.price)
-                };
+                username = req.params.username;
                 try {
                     authorizationHeader = req.headers.authorization;
                     token = authorizationHeader.split(' ')[1];
@@ -99,15 +94,82 @@ var create = function (req, res) { return __awaiter(void 0, void 0, void 0, func
                 _a.label = 1;
             case 1:
                 _a.trys.push([1, 3, , 4]);
-                return [4 /*yield*/, shopping.create(Prod)];
+                return [4 /*yield*/, shopping.show(username)];
             case 2:
-                product = _a.sent();
-                res.json(product);
+                Users = _a.sent();
+                res.json(Users);
                 return [3 /*break*/, 4];
             case 3:
                 err_2 = _a.sent();
                 res.status(400);
                 res.json(err_2);
+                return [3 /*break*/, 4];
+            case 4: return [2 /*return*/];
+        }
+    });
+}); };
+var create = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var authorizationHeader, token, User, Users, err_3;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                try {
+                    authorizationHeader = req.headers.authorization;
+                    token = authorizationHeader.split(' ')[1];
+                    jsonwebtoken_1["default"].verify(token, process.env.TOKEN_SECRET);
+                }
+                catch (err) {
+                    res.status(401);
+                    res.json('Access denied, invalid token');
+                    return [2 /*return*/];
+                }
+                _a.label = 1;
+            case 1:
+                _a.trys.push([1, 3, , 4]);
+                User = {
+                    username: req.body.username,
+                    first_name: req.body.first_name,
+                    last_name: req.body.last_name,
+                    password: req.body.password
+                };
+                return [4 /*yield*/, shopping.create(User)];
+            case 2:
+                Users = _a.sent();
+                //var token = jwt.sign({user: Users},process.env.TOKEN_SECRET);
+                res.json(Users);
+                return [3 /*break*/, 4];
+            case 3:
+                err_3 = _a.sent();
+                res.status(400);
+                res.json(err_3);
+                return [3 /*break*/, 4];
+            case 4: return [2 /*return*/];
+        }
+    });
+}); };
+var login = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var User, Users, token, err_4;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                User = {
+                    username: req.body.username,
+                    password: req.body.password
+                };
+                _a.label = 1;
+            case 1:
+                _a.trys.push([1, 3, , 4]);
+                return [4 /*yield*/, shopping.login(User.username, User.password)];
+            case 2:
+                Users = _a.sent();
+                token = jsonwebtoken_1["default"].sign({ user: Users }, process.env.TOKEN_SECRET);
+                res.json(token);
+                return [3 /*break*/, 4];
+            case 3:
+                err_4 = _a.sent();
+                res.status(400);
+                //@ts-ignore
+                res.json(err_4 + User);
                 return [3 /*break*/, 4];
             case 4: return [2 /*return*/];
         }
@@ -125,10 +187,10 @@ var verifyAuthToken = function (req, res, next) {
         res.json("Invalid Token");
     }
 };
-var product_routes = function (app) {
-    //console.log("try to connect");
-    app.get('/products', index);
-    app.get('/products/:id', show);
-    app.post('/products', verifyAuthToken, create);
+var user_routes = function (app) {
+    app.get('/users', verifyAuthToken, index);
+    app.get('/users/Username=:username', verifyAuthToken, show);
+    app.post('/users', verifyAuthToken, create);
+    app.get('/users/login', login);
 };
-exports["default"] = product_routes;
+exports["default"] = user_routes;

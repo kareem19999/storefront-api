@@ -41,6 +41,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 exports.__esModule = true;
 exports.Shopping = void 0;
 var database_1 = __importDefault(require("../database"));
+var bcrypt_1 = __importDefault(require("bcrypt"));
 var Shopping = /** @class */ (function () {
     function Shopping() {
     }
@@ -54,7 +55,7 @@ var Shopping = /** @class */ (function () {
                         return [4 /*yield*/, database_1["default"].connect()];
                     case 1:
                         conn = _a.sent();
-                        sql = 'SELECT * FROM products_table';
+                        sql = 'SELECT * FROM users_table';
                         return [4 /*yield*/, conn.query(sql)];
                     case 2:
                         result = _a.sent();
@@ -62,14 +63,14 @@ var Shopping = /** @class */ (function () {
                         return [2 /*return*/, result.rows];
                     case 3:
                         err_1 = _a.sent();
-                        throw new Error("Cannot get products ".concat(err_1));
+                        throw new Error("Cannot get users ".concat(err_1));
                     case 4: return [2 /*return*/];
                 }
             });
         });
     };
     ;
-    Shopping.prototype.show = function (id) {
+    Shopping.prototype.show = function (username) {
         return __awaiter(this, void 0, void 0, function () {
             var conn, sql, result, err_2;
             return __generator(this, function (_a) {
@@ -79,42 +80,79 @@ var Shopping = /** @class */ (function () {
                         return [4 /*yield*/, database_1["default"].connect()];
                     case 1:
                         conn = _a.sent();
-                        sql = "SELECT * FROM products_table where id=($1)";
-                        return [4 /*yield*/, conn.query(sql, [id])];
+                        sql = "SELECT * FROM users_table where username=($1)";
+                        return [4 /*yield*/, conn.query(sql, [username])];
                     case 2:
                         result = _a.sent();
                         conn.release();
                         return [2 /*return*/, result.rows[0]];
                     case 3:
                         err_2 = _a.sent();
-                        throw new Error("Cannot get products ".concat(err_2));
+                        throw new Error("Cannot get users ".concat(err_2));
                     case 4: return [2 /*return*/];
                 }
             });
         });
     };
     ;
-    //NEeds token
-    Shopping.prototype.create = function (Product) {
+    Shopping.prototype.create = function (User) {
         return __awaiter(this, void 0, void 0, function () {
-            var conn, sql, result, err_3;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
+            var _a, BCRYPT_PASSWORD, SALT_ROUNDS, conn, sql, hashed, result, err_3;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
                     case 0:
-                        _a.trys.push([0, 3, , 4]);
+                        _b.trys.push([0, 3, , 4]);
+                        _a = process.env, BCRYPT_PASSWORD = _a.BCRYPT_PASSWORD, SALT_ROUNDS = _a.SALT_ROUNDS;
                         return [4 /*yield*/, database_1["default"].connect()];
                     case 1:
-                        conn = _a.sent();
-                        sql = "INSERT INTO products_table (name,price) VALUES ($1,$2) RETURNING *";
-                        return [4 /*yield*/, conn.query(sql, [Product.name, Product.price])];
+                        conn = _b.sent();
+                        sql = "INSERT INTO users_table (username,first_name,last_name,password) VALUES ($1,$2,$3,$4) RETURNING *";
+                        hashed = bcrypt_1["default"].hashSync(User.password + BCRYPT_PASSWORD, parseInt(SALT_ROUNDS));
+                        return [4 /*yield*/, conn.query(sql, [User.username, User.first_name, User.last_name, hashed])];
                     case 2:
-                        result = _a.sent();
+                        result = _b.sent();
                         conn.release();
                         return [2 /*return*/, result.rows[0]];
                     case 3:
-                        err_3 = _a.sent();
-                        throw new Error("Cannot create products ".concat(err_3));
+                        err_3 = _b.sent();
+                        throw new Error("Cannot create users ".concat(err_3));
                     case 4: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    ;
+    Shopping.prototype.login = function (username, password) {
+        return __awaiter(this, void 0, void 0, function () {
+            var _a, BCRYPT_PASSWORD, SALT_ROUNDS, conn, sql, result, User, err_4;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        console.log("Called login");
+                        _b.label = 1;
+                    case 1:
+                        _b.trys.push([1, 4, , 5]);
+                        _a = process.env, BCRYPT_PASSWORD = _a.BCRYPT_PASSWORD, SALT_ROUNDS = _a.SALT_ROUNDS;
+                        return [4 /*yield*/, database_1["default"].connect()];
+                    case 2:
+                        conn = _b.sent();
+                        sql = "SELECT password FROM users_table WHERE username=($1)";
+                        return [4 /*yield*/, conn.query(sql, [username])];
+                    case 3:
+                        result = _b.sent();
+                        conn.release();
+                        if (result.rows.length) {
+                            User = result.rows[0];
+                            //@ts-ignore
+                            if (bcrypt_1["default"].compareSync(password + BCRYPT_PASSWORD, User.password)) {
+                                return [2 /*return*/, User];
+                            }
+                        }
+                        return [2 /*return*/, null];
+                    case 4:
+                        err_4 = _b.sent();
+                        throw new Error("Cannot login ".concat(err_4));
+                    case 5: return [2 /*return*/];
                 }
             });
         });

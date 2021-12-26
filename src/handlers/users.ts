@@ -1,36 +1,73 @@
 import express, {Request,Response} from 'express'
 import {User,Shopping} from '../models/user'
-
+import jwt from 'jsonwebtoken'
 const shopping= new Shopping();
 
-// const index= async (_req: Request, res:Response) => {
-//     const users= await shopping.index();
-//     res.json(users);
-// }
-// const show = async (req: Request, res:Response) => {
-//     const id:number=parseInt(req.params.id);
-//     //console.log(req.params);
-//     try{
-//         const products=await shopping.show(id);
-//         res.json(products);
-//     }catch(err)
-//     {
-//         res.status(400);
-//         res.json(err);
-//     }
-    
-// }
-const create = async (req: Request, res:Response) => {
-    const User: User={
-        username: req.body.username,
-        first_name: req.body.first_name,
-        last_name: req.body.last_name,
-        password: req.body.password
-        };
-    //console.log(req.body);
+const index= async (req: Request, res:Response) => {
     try {
+        console.log("Here")
+        const authorizationHeader = req.headers.authorization
+        //@ts-ignore
+        const token = authorizationHeader.split(' ')[1]
+      
+        jwt.verify(token, process.env.TOKEN_SECRET)
+    } catch(err) {
+        
+        res.status(401)
+        res.json('Access denied, invalid token')
+        return
+    }
+    try {
+        const users= await shopping.index();
+        res.json(users);
+    }catch(err)
+    {
+        res.status(400)
+        res.json(err)
+    }
+
+}
+const show = async (req: Request, res:Response) => {
+    const username:String=req.params.username;
+    try {
+        const authorizationHeader = req.headers.authorization
+        const token = authorizationHeader.split(' ')[1]
+        jwt.verify(token, process.env.TOKEN_SECRET)
+    } catch(err) {
+        res.status(401)
+        res.json('Access denied, invalid token')
+        return
+    }
+    try{
+        const Users=await shopping.show(username);
+        res.json(Users);
+    }catch(err)
+    {
+        res.status(400);
+        res.json(err);
+    }
+    
+}
+const create = async (req: Request, res:Response) => {
+    try {
+        const authorizationHeader = req.headers.authorization
+        const token = authorizationHeader.split(' ')[1]
+        jwt.verify(token, process.env.TOKEN_SECRET)
+    } catch(err) {
+        res.status(401)
+        res.json('Access denied, invalid token')
+        return
+    }
+    try {
+        const User: User={
+            username: req.body.username,
+            first_name: req.body.first_name,
+            last_name: req.body.last_name,
+            password: req.body.password
+            };
         const Users=await shopping.create(User);
-        res.json(User);
+        //var token = jwt.sign({user: Users},process.env.TOKEN_SECRET);
+        res.json(Users);
     }catch(err){
         res.status(400);
         res.json(err);
@@ -45,19 +82,34 @@ const login = async (req: Request, res:Response) => {
     //console.log(req.body);
     try {
         const Users=await shopping.login(User.username,User.password);
-        res.json(User);
+        var token = jwt.sign({user: Users},process.env.TOKEN_SECRET);
+        res.json(token);
+        
     }catch(err){
         res.status(400);
-        res.json(err);
+        //@ts-ignore
+        res.json(err+User);
     }
 
 }
-const product_routes = ( app: express.Application)=>
-{
-    //console.log("try to connect");
-    //app.get('/products',index);
-    //app.get('/products/:id',show);
-    app.post('/users',create);
+const verifyAuthToken = (req: Request, res: Response, next: any) => {
+    try {
+        const authorizationHeader = req.headers.authorization
+        const token = authorizationHeader.split(' ')[1]
+        const decoded = jwt.verify(token, process.env.TOKEN_SECRET)
+        next()
+    } catch (error) {
+        res.status(401)
+        res.json("Invalid Token")
+    }
 }
 
-export default product_routes;
+const user_routes = ( app: express.Application)=>
+{
+    app.get('/users',verifyAuthToken,index);
+    app.get('/users/Username=:username',verifyAuthToken,show);
+    app.post('/users',verifyAuthToken,create);
+    app.get('/users/login',login)
+}
+
+export default user_routes

@@ -34,11 +34,12 @@ export class Shopping {
         throw new Error(`Cannot get products ${err}`)
     }
     };
-    //async create()
+    //NEeds token
     async create(Product: Product): Promise<Product>{
         try
         {
             //console.log("Called product create");
+            //console.log(Product)
             const conn= await client.connect();
             const sql= `INSERT INTO products_table (name,price) VALUES ($1,$2) RETURNING *`;
             const result = await conn.query(sql,[Product.name,Product.price]);

@@ -11,11 +11,11 @@ const {
     POSTGRES_PASSWORD,
     POSTGRES_DB_Test,
     POSTGRES_PORT,
-    MODE,
+    ENV,
 }= process.env;
 console.log("hello");
 //console.log(ENV);
-if(MODE === 'test') {
+if(ENV === 'test') {
     client = new Pool({
       host: POSTGRES_HOST,
       database: POSTGRES_DB_Test,
@@ -24,7 +24,7 @@ if(MODE === 'test') {
       port: (POSTGRES_PORT as unknown) as number
     })
     //console.log("Test");
-  }else if(MODE === 'dev') {
+  }else if(ENV === 'dev') {
     //console.log("Dev");
     client = new Pool({
       host: POSTGRES_HOST,

@@ -2,6 +2,7 @@ import express, { Request, Response } from 'express'
 import cors from 'cors'
 import bodyParser from 'body-parser'
 import product_routes from './handlers/products'
+import user_routes from './handlers/users'
 
 const corsOptions = {
     "origin": 'http://someotherdomain.com',
@@ -16,6 +17,7 @@ app.get('/hi', function (req: Request, res: Response) {
     res.send('Hello World!')
 })
 product_routes(app);
+user_routes(app)
 app.get('/test-cors',cors(corsOptions),(req:Request,res:Response)=>
     {
         res.json({msg:"This is CORS enabled"})

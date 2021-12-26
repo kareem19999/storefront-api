@@ -7,14 +7,12 @@ These are the notes from a meeting with the frontend developer that describe wha
 #### Products
 - Index //Done
 - Show //Done
-- Create [token required]
-- [OPTIONAL] Top 5 most popular products 
-- [OPTIONAL] Products by category (args: product category)
+- Create [token required]//Done
 
 #### Users
-- Index [token required]
-- Show [token required]
-- Create N[token required]
+- Index [token required] //Done
+- Show [token required] //Done
+- Create N[token required] //Done
 
 #### Orders
 - Current Order by user (args: user id)[token required]
@@ -29,9 +27,9 @@ These are the notes from a meeting with the frontend developer that describe wha
 
 #### User
 - id //Username will be non serial to prevent duplicated names
-- firstName
-- lastName
-- password
+- firstName //Done
+- lastName //Done
+- password //Done
 
 #### Orders
 - id
