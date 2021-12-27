@@ -48,7 +48,6 @@ var index = function (req, res) { return __awaiter(void 0, void 0, void 0, funct
         switch (_a.label) {
             case 0:
                 try {
-                    console.log("Here");
                     authorizationHeader = req.headers.authorization;
                     token = authorizationHeader.split(' ')[1];
                     jsonwebtoken_1["default"].verify(token, process.env.TOKEN_SECRET);
@@ -140,6 +139,8 @@ var create = function (req, res) { return __awaiter(void 0, void 0, void 0, func
                 return [3 /*break*/, 4];
             case 3:
                 err_3 = _a.sent();
+                //@ts-ignore
+                console.log(err_3);
                 res.status(400);
                 res.json(err_3);
                 return [3 /*break*/, 4];
@@ -178,6 +179,7 @@ var login = function (req, res) { return __awaiter(void 0, void 0, void 0, funct
 var verifyAuthToken = function (req, res, next) {
     try {
         var authorizationHeader = req.headers.authorization;
+        //@ts-ignore
         var token = authorizationHeader.split(' ')[1];
         var decoded = jsonwebtoken_1["default"].verify(token, process.env.TOKEN_SECRET);
         next();

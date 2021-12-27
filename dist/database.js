@@ -18,6 +18,7 @@ if (ENV === 'test') {
         password: POSTGRES_PASSWORD,
         port: POSTGRES_PORT
     });
+    console.log("Test");
     //console.log("Test");
 }
 else if (ENV === 'dev') {
@@ -29,6 +30,7 @@ else if (ENV === 'dev') {
         password: POSTGRES_PASSWORD,
         port: POSTGRES_PORT
     });
+    console.log("DEV");
 }
 else {
     console.log("Nothing");

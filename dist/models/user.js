@@ -128,17 +128,14 @@ var Shopping = /** @class */ (function () {
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
-                        console.log("Called login");
-                        _b.label = 1;
-                    case 1:
-                        _b.trys.push([1, 4, , 5]);
+                        _b.trys.push([0, 3, , 4]);
                         _a = process.env, BCRYPT_PASSWORD = _a.BCRYPT_PASSWORD, SALT_ROUNDS = _a.SALT_ROUNDS;
                         return [4 /*yield*/, database_1["default"].connect()];
-                    case 2:
+                    case 1:
                         conn = _b.sent();
                         sql = "SELECT password FROM users_table WHERE username=($1)";
                         return [4 /*yield*/, conn.query(sql, [username])];
-                    case 3:
+                    case 2:
                         result = _b.sent();
                         conn.release();
                         if (result.rows.length) {
@@ -149,10 +146,10 @@ var Shopping = /** @class */ (function () {
                             }
                         }
                         return [2 /*return*/, null];
-                    case 4:
+                    case 3:
                         err_4 = _b.sent();
                         throw new Error("Cannot login ".concat(err_4));
-                    case 5: return [2 /*return*/];
+                    case 4: return [2 /*return*/];
                 }
             });
         });

@@ -5,12 +5,11 @@ const shopping= new Shopping();
 
 const index= async (req: Request, res:Response) => {
     try {
-        console.log("Here")
         const authorizationHeader = req.headers.authorization
         //@ts-ignore
         const token = authorizationHeader.split(' ')[1]
       
-        jwt.verify(token, process.env.TOKEN_SECRET)
+        jwt.verify(token, process.env.TOKEN_SECRET as string)
     } catch(err) {
         
         res.status(401)
@@ -31,8 +30,9 @@ const show = async (req: Request, res:Response) => {
     const username:String=req.params.username;
     try {
         const authorizationHeader = req.headers.authorization
+        //@ts-ignore
         const token = authorizationHeader.split(' ')[1]
-        jwt.verify(token, process.env.TOKEN_SECRET)
+        jwt.verify(token, process.env.TOKEN_SECRET as string)
     } catch(err) {
         res.status(401)
         res.json('Access denied, invalid token')
@@ -51,8 +51,9 @@ const show = async (req: Request, res:Response) => {
 const create = async (req: Request, res:Response) => {
     try {
         const authorizationHeader = req.headers.authorization
+        //@ts-ignore
         const token = authorizationHeader.split(' ')[1]
-        jwt.verify(token, process.env.TOKEN_SECRET)
+        jwt.verify(token, process.env.TOKEN_SECRET as string)
     } catch(err) {
         res.status(401)
         res.json('Access denied, invalid token')
@@ -69,6 +70,8 @@ const create = async (req: Request, res:Response) => {
         //var token = jwt.sign({user: Users},process.env.TOKEN_SECRET);
         res.json(Users);
     }catch(err){
+        //@ts-ignore
+        console.log(err);
         res.status(400);
         res.json(err);
     }
@@ -82,7 +85,7 @@ const login = async (req: Request, res:Response) => {
     //console.log(req.body);
     try {
         const Users=await shopping.login(User.username,User.password);
-        var token = jwt.sign({user: Users},process.env.TOKEN_SECRET);
+        var token = jwt.sign({user: Users},process.env.TOKEN_SECRET as string);
         res.json(token);
         
     }catch(err){
@@ -95,8 +98,9 @@ const login = async (req: Request, res:Response) => {
 const verifyAuthToken = (req: Request, res: Response, next: any) => {
     try {
         const authorizationHeader = req.headers.authorization
+        //@ts-ignore
         const token = authorizationHeader.split(' ')[1]
-        const decoded = jwt.verify(token, process.env.TOKEN_SECRET)
+        const decoded = jwt.verify(token, process.env.TOKEN_SECRET as string)
         next()
     } catch (error) {
         res.status(401)

@@ -116,6 +116,7 @@ var create = function (req, res) { return __awaiter(void 0, void 0, void 0, func
 var verifyAuthToken = function (req, res, next) {
     try {
         var authorizationHeader = req.headers.authorization;
+        //@ts-ignore
         var token = authorizationHeader.split(' ')[1];
         var decoded = jsonwebtoken_1["default"].verify(token, process.env.TOKEN_SECRET);
         next();

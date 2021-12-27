@@ -57,7 +57,7 @@ export class Shopping {
     };
 
     async login(username: String, password: String): Promise<User | null>{
-        console.log("Called login");
+        //console.log("Called login");
         try
         {
             

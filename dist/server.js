@@ -27,3 +27,4 @@ app.get('/test-cors', (0, cors_1["default"])(corsOptions), function (req, res) {
 app.listen(port, function () {
     console.log("starting app on: ".concat(port));
 });
+exports["default"] = app;
