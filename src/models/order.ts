@@ -2,8 +2,8 @@
 import client from '../database'
 
 export type Order ={
-    id?:Number
-    username :String;
+    id?:number
+    username :string;
     status?: Boolean 
 };
 
@@ -20,7 +20,7 @@ export class Shopping {
         throw new Error(`Cannot get orders ${err}`)
     }
     };
-    async show(username: String): Promise<Order[]>{
+    async show(username: string): Promise<Order[]>{
     try
     {
         //console.log("Called Order show");
@@ -38,7 +38,7 @@ export class Shopping {
         {
             const conn= await client.connect();
             //All new orders will be automatically placed as active
-            const sql= `INSERT INTO orders_table (username,status,) VALUES ($1) RETURNING *`;
+            const sql= `INSERT INTO orders_table (username,status) VALUES ($1,$2) RETURNING *`;
             //@ts-ignore
             const result = await conn.query(sql,[Order.username,false]);
             conn.release();
@@ -47,12 +47,12 @@ export class Shopping {
             throw new Error(`Cannot create order ${err}`)
         }
     };
-    async addProduct(orderId: Number, productId: Number,quantity: Number): Promise<Order>{
+    async addProduct(orderId: number, productId: number,quantity: number): Promise<Order>{
         try
         {
             const conn= await client.connect();
             //All new orders will be automatically placed as active
-            const sql= `INSERT INTO orders_products_table (orderId,productId,quantity)  VALUES ($1,$2,$3) RETURNING *`;
+            const sql= `INSERT INTO orders_products_table (order_id,product_id,quantity)  VALUES ($1,$2,$3) RETURNING *`;
             //@ts-ignore
             const result = await conn.query(sql,[orderId,productId,quantity]);
             conn.release();

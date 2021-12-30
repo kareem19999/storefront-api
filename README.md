@@ -2,21 +2,21 @@
 
 
 ### Endpoints related to users_table  
-- Login route : '/users/login' [GET]                  Send a JSON object having {username:theUsername, password:thePassword}.
+- Login route : '/users/login' [POST]                  Send a JSON object having {"username":theUsername, "password":thePassword}.
 - Index route : '/users' [GET]                        Send a valid Authentication Bearer Token.
-- Show route  : '/users/Username=:username [GET]      Send a valid Authentication Bearer Token.
-- Create route: '/users' [POST]                       Send a JSON object having {username:theUsername,first_name: theFirstName,last_name:theLast_Name,password:thePassword} and valid Authentication Bearer Token.
+- Show route  : '/users/:username [GET]      Send a valid Authentication Bearer Token.
+- Create route: '/users' [POST]                       Send a JSON object having {"username":theUsername,"first_name": theFirstName,"last_name":theLast_Name,"password":thePassword} and valid Authentication Bearer Token.
 
 ### Endpoints related to products_table
 - Index route : '/products' [GET]     No need to send anything.
 - Show route  : '/products/:id' [GET] No need to send anything.
-- Create route: '/products' [POST]    Send a JSON object having {name:theName,price:thePrice} and valid Authentication Bearer Token.
+- Create route: '/products' [POST]    Send a JSON object having {"name":theName,"price":thePrice} and valid Authentication Bearer Token.
 
 ### Endpoints related to orders
 - Index route         : '/orders' [GET]       No need to send anything.
 - Show route          : '/orders/:username' [GET]  Send a valid authentication token.
-- Create Route        : '/orders' [POST] Send a JSON object having {username:username}.
-- Add Product Route   : '/orders/:id/products' [POST] Send a JSON objet having {productId:productId,quantity:quantity}.
+- Create Route        : '/orders' [POST] Send a JSON object having {"username":username}.
+- Add Product Route   : '/orders/:id/products' [POST] Send a JSON objet having {"product_id":productId,"quantity":quantity}.
 ### Tables
 - Table: **users_table**\
  username: VARCHAR PRIMARY KEY\
@@ -42,18 +42,19 @@ quantity:NUMBER
 
 #### PSQL:
 Login to PSQL server using admin/default credentials, and run on port 5432.\
+Tried to run migration on below scripts but did not work due to running as transaction which CREATE DATABASE cannot run in.\
 CREATE USER shopping_user WITH PASSWORD 'password123';\
 CREATE DATABASE shopping;\
 CREATE DATABASE shopping_test;\
 GRANT ALL PRIVILEGES ON DATABASE shopping TO shopping_user;\
-GRANT ALL PRIVILEGES ON DATABASE shopping_test TO shopping_user;\
+GRANT ALL PRIVILEGES ON DATABASE shopping_test TO shopping_user;
 
 
 #### Server:
 Create a file called .env in root directory, the variables are stated at Environment Variables section.\
 npm install\
 npm install db-migrate yarn ts-node dotenv -g\
-db-migrate up
+
 
 admin credentials (Super user-ish)
 Username: admin

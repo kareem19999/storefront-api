@@ -1,6 +1,7 @@
 import express, {Request,Response} from 'express'
 import {User,Shopping} from '../models/user'
 import jwt from 'jsonwebtoken'
+import checkNull from '../utilities/checkNull';
 const shopping= new Shopping();
 
 const index= async (req: Request, res:Response) => {
@@ -27,7 +28,7 @@ const index= async (req: Request, res:Response) => {
 
 }
 const show = async (req: Request, res:Response) => {
-    const username:String=req.params.username;
+    const username:string=req.params.username;
     try {
         const authorizationHeader = req.headers.authorization
         //@ts-ignore
@@ -39,6 +40,7 @@ const show = async (req: Request, res:Response) => {
         return
     }
     try{
+        checkNull([username]);
         const Users=await shopping.show(username);
         res.json(Users);
     }catch(err)
@@ -66,6 +68,7 @@ const create = async (req: Request, res:Response) => {
             last_name: req.body.last_name,
             password: req.body.password
             };
+        checkNull([User.username,User.first_name,User.last_name,User.password])
         const Users=await shopping.create(User);
         //var token = jwt.sign({user: Users},process.env.TOKEN_SECRET);
         res.json(Users);
@@ -84,6 +87,7 @@ const login = async (req: Request, res:Response) => {
         };
     //console.log(req.body);
     try {
+        checkNull([User.username,User.password]);
         const Users=await shopping.login(User.username,User.password);
         var token = jwt.sign({user: Users},process.env.TOKEN_SECRET as string);
         res.json(token);
@@ -111,9 +115,9 @@ const verifyAuthToken = (req: Request, res: Response, next: any) => {
 const user_routes = ( app: express.Application)=>
 {
     app.get('/users',verifyAuthToken,index);
-    app.get('/users/Username=:username',verifyAuthToken,show);
+    app.get('/users/:username',verifyAuthToken,show);
     app.post('/users',verifyAuthToken,create);
-    app.get('/users/login',login)
+    app.post('/users/login',login)
 }
 
 export default user_routes

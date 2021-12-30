@@ -1,6 +1,8 @@
 import express, {Request,Response} from 'express'
 import {Product,Shopping} from '../models/product'
 import jwt from 'jsonwebtoken'
+import checkNull from '../utilities/checkNull'
+import checkNaN from '../utilities/checkNaN';
 const shopping= new Shopping();
 
 const index= async (_req: Request, res:Response) => {
@@ -11,6 +13,7 @@ const show = async (req: Request, res:Response) => {
     const id:number=parseInt(req.params.id);
     //console.log(req.params);
     try{
+        checkNaN([id]);
         const products=await shopping.show(id);
         res.json(products);
     }catch(err)
@@ -36,6 +39,8 @@ const create = async (req: Request, res:Response) => {
         return
     }
     try {
+        checkNull([Prod.name,Prod.price]);
+        checkNaN([Prod.price]);
         const product=await shopping.create(Prod);
         res.json(product);
     }catch(err){

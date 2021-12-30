@@ -1,6 +1,8 @@
 import express, {Request,Response} from 'express'
 import {Order,Shopping} from '../models/order'
 import jwt from 'jsonwebtoken'
+import checkNull from '../utilities/checkNull';
+import checkNaN from '../utilities/checkNaN';
 const shopping= new Shopping();
 
 const index= async (_req: Request, res:Response) => {
@@ -8,7 +10,7 @@ const index= async (_req: Request, res:Response) => {
     res.json(orders);
 }
 const show = async (req: Request, res:Response) => {
-    const username:String=req.params.username;
+    const username:string=req.params.username;
     try {
         const authorizationHeader = req.headers.authorization
         //@ts-ignore
@@ -20,6 +22,7 @@ const show = async (req: Request, res:Response) => {
         return
     }
     try{
+        checkNull([username]);
         const orders=await shopping.show(username);
         res.json(orders);
     }catch(err)
@@ -34,6 +37,17 @@ const create = async (req: Request, res:Response) => {
         username :req.body.username
         };
     try {
+        const authorizationHeader = req.headers.authorization
+        //@ts-ignore
+        const token = authorizationHeader.split(' ')[1]
+        jwt.verify(token, process.env.TOKEN_SECRET as string)
+    } catch(err) {
+        res.status(401)
+        res.json('Access denied, invalid token')
+        return
+    }
+    try {
+        checkNull([order.username]);
         const result=await shopping.create(order);
         res.json(result);
     }catch(err){
@@ -43,11 +57,23 @@ const create = async (req: Request, res:Response) => {
 
 }
 const addProduct = async (req: Request, res:Response) => {
-    const orderId:Number=parseInt(req.params.id);
-    const productId:Number=parseInt(req.body.productId);
-    const quantity:Number=parseInt(req.body.quantity);
+    const orderId:number=parseInt(req.params.id);
+    const productId:number=parseInt(req.body.product_id);
+    const quantity:number=parseInt(req.body.quantity);
     try {
-        const result=await shopping.addProduct(quantity,productId,orderId,);
+        const authorizationHeader = req.headers.authorization
+        //@ts-ignore
+        const token = authorizationHeader.split(' ')[1]
+        jwt.verify(token, process.env.TOKEN_SECRET as string)
+    } catch(err) {
+        res.status(401)
+        res.json('Access denied, invalid token')
+        return
+    }
+    try {
+        checkNull([orderId,productId,quantity]);
+        checkNaN([orderId,productId,quantity]);
+        const result=await shopping.addProduct(orderId,productId,quantity);
         res.json(result);
     }catch(err){
         res.status(400);

@@ -8,6 +8,7 @@ var cors_1 = __importDefault(require("cors"));
 var body_parser_1 = __importDefault(require("body-parser"));
 var products_1 = __importDefault(require("./handlers/products"));
 var users_1 = __importDefault(require("./handlers/users"));
+var orders_1 = __importDefault(require("./handlers/orders"));
 var corsOptions = {
     "origin": 'http://someotherdomain.com',
     "optionsSuccessStatus": 200
@@ -21,6 +22,7 @@ app.get('/hi', function (req, res) {
 });
 (0, products_1["default"])(app);
 (0, users_1["default"])(app);
+(0, orders_1["default"])(app);
 app.get('/test-cors', (0, cors_1["default"])(corsOptions), function (req, res) {
     res.json({ msg: "This is CORS enabled" });
 });

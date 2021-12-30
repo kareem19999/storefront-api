@@ -32,11 +32,11 @@ describe("Order Tests", ()=> {
             expect(result.statusCode).toEqual(200);
         });
         it("addProduct should add product 1 for order 1", async ()=> {
-            const result= await request.post('/orders/1/products').send({productId:1,quantity:5}).auth(Token, {type:'bearer'});
+            const result= await request.post('/orders/1/products').send({product_id:1,quantity:5}).auth(Token, {type:'bearer'});
             expect(result.statusCode).toEqual(200);
         });
         it("addProduct should add product 2 for order 1", async ()=> {
-            const result= await request.post('/orders/1/products').send({productId:2,quantity:10}).auth(Token, {type:'bearer'});
+            const result= await request.post('/orders/1/products').send({product_id:2,quantity:10}).auth(Token, {type:'bearer'});
             expect(result.statusCode).toEqual(200);
         });
     });

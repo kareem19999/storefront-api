@@ -2,9 +2,9 @@
 import client from '../database'
 
 export type Product ={
-    id? :Number;
-    name: String ;
-    price: Number
+    id? :number;
+    name: string ;
+    price: number
 };
 
 export class Shopping {
@@ -21,7 +21,7 @@ export class Shopping {
         throw new Error(`Cannot get products ${err}`)
     }
     };
-    async show(id: Number): Promise<Product>{
+    async show(id: number): Promise<Product>{
     try
     {
         //console.log("Called product show");
@@ -40,11 +40,12 @@ export class Shopping {
         {
             //console.log("Called product create");
             //console.log(Product)
-            const conn= await client.connect();
-            const sql= `INSERT INTO products_table (name,price) VALUES ($1,$2) RETURNING *`;
-            const result = await conn.query(sql,[Product.name,Product.price]);
-            conn.release();
-            return result.rows[0];
+
+                const conn= await client.connect();
+                const sql= `INSERT INTO products_table (name,price) VALUES ($1,$2) RETURNING *`;
+                const result = await conn.query(sql,[Product.name,Product.price]);
+                conn.release();
+                return result.rows[0];
         }catch(err){
             throw new Error(`Cannot create products ${err}`)
         }

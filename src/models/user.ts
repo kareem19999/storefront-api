@@ -3,10 +3,10 @@ import client from '../database'
 import bcrypt from 'bcrypt'
 
 export type User ={
-    username :String;
-    first_name?: String ;
-    last_name?: String;
-    password: String
+    username :string;
+    first_name?: string ;
+    last_name?: string;
+    password: string
 };
 
 export class Shopping {
@@ -22,7 +22,7 @@ export class Shopping {
         throw new Error(`Cannot get users ${err}`)
     }
     };
-    async show(username: String): Promise<User>{
+    async show(username: string): Promise<User>{
     try
     {
         //console.log("Called user show");
@@ -56,7 +56,7 @@ export class Shopping {
         }
     };
 
-    async login(username: String, password: String): Promise<User | null>{
+    async login(username: string, password: string): Promise<User | null>{
         //console.log("Called login");
         try
         {

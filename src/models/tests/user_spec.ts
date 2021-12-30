@@ -18,7 +18,7 @@ describe("User Tests", ()=> {
         expect(shopping.login).toBeDefined();
     });
     it("Should login admin ", async ()=> {
-        const result= await request.get('/users/login').send({username:"admin",password: "admin"});
+        const result= await request.post('/users/login').send({username:"admin",password: "admin"});
         expect(result.statusCode).toEqual(200);
      });
     it("Should index all users", async() => {

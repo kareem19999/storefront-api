@@ -13,7 +13,7 @@ const {
     POSTGRES_PORT,
     ENV,
 }= process.env;
-console.log("hello");
+//console.log("hello");
 //console.log(ENV);
 if(ENV === 'test') {
     client = new Pool({
@@ -23,7 +23,7 @@ if(ENV === 'test') {
       password: POSTGRES_PASSWORD,
       port: (POSTGRES_PORT as unknown) as number
     })
-    console.log("Test");
+    //console.log("Test");
     //console.log("Test");
   }else if(ENV === 'dev') {
     //console.log("Dev");
@@ -34,9 +34,9 @@ if(ENV === 'test') {
       password: POSTGRES_PASSWORD,
       port: (POSTGRES_PORT as unknown) as number
     })
-    console.log("DEV");
+    //console.log("DEV");
   }else {
-      console.log("Nothing");
+      //console.log("Nothing");
   }
 //@ts-ignore
 export default client

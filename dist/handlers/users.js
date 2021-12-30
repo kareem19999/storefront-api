@@ -41,6 +41,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 exports.__esModule = true;
 var user_1 = require("../models/user");
 var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+var checkNull_1 = __importDefault(require("../utilities/checkNull"));
 var shopping = new user_1.Shopping();
 var index = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var authorizationHeader, token, users, err_1;
@@ -93,6 +94,7 @@ var show = function (req, res) { return __awaiter(void 0, void 0, void 0, functi
                 _a.label = 1;
             case 1:
                 _a.trys.push([1, 3, , 4]);
+                (0, checkNull_1["default"])([username]);
                 return [4 /*yield*/, shopping.show(username)];
             case 2:
                 Users = _a.sent();
@@ -131,6 +133,7 @@ var create = function (req, res) { return __awaiter(void 0, void 0, void 0, func
                     last_name: req.body.last_name,
                     password: req.body.password
                 };
+                (0, checkNull_1["default"])([User.username, User.first_name, User.last_name, User.password]);
                 return [4 /*yield*/, shopping.create(User)];
             case 2:
                 Users = _a.sent();
@@ -160,6 +163,7 @@ var login = function (req, res) { return __awaiter(void 0, void 0, void 0, funct
                 _a.label = 1;
             case 1:
                 _a.trys.push([1, 3, , 4]);
+                (0, checkNull_1["default"])([User.username, User.password]);
                 return [4 /*yield*/, shopping.login(User.username, User.password)];
             case 2:
                 Users = _a.sent();
@@ -191,8 +195,8 @@ var verifyAuthToken = function (req, res, next) {
 };
 var user_routes = function (app) {
     app.get('/users', verifyAuthToken, index);
-    app.get('/users/Username=:username', verifyAuthToken, show);
+    app.get('/users/:username', verifyAuthToken, show);
     app.post('/users', verifyAuthToken, create);
-    app.get('/users/login', login);
+    app.post('/users/login', login);
 };
 exports["default"] = user_routes;

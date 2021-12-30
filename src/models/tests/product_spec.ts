@@ -23,6 +23,14 @@ describe("Products Tests", ()=> {
         const result= await request.post('/products').send({name:"Apples",price:0.99}).auth(Token, {type:'bearer'});
         expect(result.statusCode).toEqual(200);
     });
+    it("Create should result in error 400 due to null ", async ()=> {
+        const result= await request.post('/products').send({name:null,price:0.99}).auth(Token, {type:'bearer'});
+        expect(result.statusCode).toEqual(400);
+    });
+    it("Create should result in error 400 due to NaN ", async ()=> {
+        const result= await request.post('/products').send({name:"Carrot",price:"fssfs"}).auth(Token, {type:'bearer'});
+        expect(result.statusCode).toEqual(400);
+    });
     //No need to use supertest here as these do not need token
     it("Index should return everything", async ()=> {
         const result= await shopping.index();
