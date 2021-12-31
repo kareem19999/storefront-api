@@ -5,7 +5,6 @@ export type Order ={
     id?:number
     username :string;
     status?: Boolean;
-
 };
 
 export class Shopping {
@@ -49,7 +48,7 @@ export class Shopping {
             throw new Error(`Cannot create order ${err}`)
         }
     };
-    async addProduct(orderId: number, productId: number,quantity: number): Promise<Order>{
+    async addProduct(orderId: number, productId: number,quantity: number): Promise<{id:number,order_id:number,product_id:number,quantity:number}>{
         try
         {
             const conn= await client.connect();

@@ -88,7 +88,7 @@ const login = async (req: Request, res:Response) => {
     //console.log(req.body);
     try {
         checkNull([User.username,User.password]);
-        const Users=await shopping.login(User.username,User.password);
+        const Users=await shopping.login(User.username,User.password as string);
         var token = jwt.sign({user: Users},process.env.TOKEN_SECRET as string);
         res.json(token);
         

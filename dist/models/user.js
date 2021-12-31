@@ -55,7 +55,7 @@ var Shopping = /** @class */ (function () {
                         return [4 /*yield*/, database_1["default"].connect()];
                     case 1:
                         conn = _a.sent();
-                        sql = 'SELECT * FROM users_table';
+                        sql = 'SELECT username,first_name,last_name FROM users_table';
                         return [4 /*yield*/, conn.query(sql)];
                     case 2:
                         result = _a.sent();
@@ -80,7 +80,7 @@ var Shopping = /** @class */ (function () {
                         return [4 /*yield*/, database_1["default"].connect()];
                     case 1:
                         conn = _a.sent();
-                        sql = "SELECT * FROM users_table where username=($1)";
+                        sql = "SELECT username,first_name,last_name FROM users_table where username=($1)";
                         return [4 /*yield*/, conn.query(sql, [username])];
                     case 2:
                         result = _a.sent();
@@ -106,7 +106,7 @@ var Shopping = /** @class */ (function () {
                         return [4 /*yield*/, database_1["default"].connect()];
                     case 1:
                         conn = _b.sent();
-                        sql = "INSERT INTO users_table (username,first_name,last_name,password) VALUES ($1,$2,$3,$4) RETURNING *";
+                        sql = "INSERT INTO users_table (username,first_name,last_name,password) VALUES ($1,$2,$3,$4) RETURNING username,first_name,last_name";
                         hashed = bcrypt_1["default"].hashSync(User.password + BCRYPT_PASSWORD, parseInt(SALT_ROUNDS));
                         return [4 /*yield*/, conn.query(sql, [User.username, User.first_name, User.last_name, hashed])];
                     case 2:

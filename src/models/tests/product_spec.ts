@@ -15,28 +15,27 @@ describe("Products Tests", ()=> {
     it("Should have create method", () => {
         expect(shopping.create).toBeDefined();
     });
-    it("Create should add a product of id:1 name:Cookies price:1.99, using Auth Token", async ()=> {
+    it("Route Test: Create should add a product of id:1 name:Cookies price:1.99, using Auth Token", async ()=> {
         const result= await request.post('/products').send({name:"Cookies",price:1.99}).auth(Token, {type:'bearer'});
         expect(result.statusCode).toEqual(200);
     });
-    it("Create should add a product of id:2 name:Apples price:0.99, using Auth Token", async ()=> {
+    it("Route Test: Create should add a product of id:2 name:Apples price:0.99, using Auth Token", async ()=> {
         const result= await request.post('/products').send({name:"Apples",price:0.99}).auth(Token, {type:'bearer'});
         expect(result.statusCode).toEqual(200);
     });
-    it("Create should result in error 400 due to null ", async ()=> {
+    it("Route Test: Create should result in error 400 due to null ", async ()=> {
         const result= await request.post('/products').send({name:null,price:0.99}).auth(Token, {type:'bearer'});
         expect(result.statusCode).toEqual(400);
     });
-    it("Create should result in error 400 due to NaN ", async ()=> {
+    it("Route Test: Create should result in error 400 due to NaN ", async ()=> {
         const result= await request.post('/products').send({name:"Carrot",price:"fssfs"}).auth(Token, {type:'bearer'});
         expect(result.statusCode).toEqual(400);
     });
-    //No need to use supertest here as these do not need token
-    it("Index should return everything", async ()=> {
+    it("Function Test: Index should return everything", async ()=> {
         const result= await shopping.index();
         expect(result).toEqual([{id:1,name:"Cookies",price:1.99},{id:2,name:"Apples",price:0.99}]);
     });
-    it("Show should return id:1 name:Cookies price:1.99", async ()=> {
+    it("Function Test: Show should return id:1 name:Cookies price:1.99", async ()=> {
         const result= await shopping.show(1);
         expect(result).toEqual({id:1,name:"Cookies",price:1.99});
     });
