@@ -4,7 +4,8 @@ import client from '../database'
 export type Order ={
     id?:number
     username :string;
-    status?: Boolean 
+    status?: Boolean;
+
 };
 
 export class Shopping {
@@ -20,27 +21,28 @@ export class Shopping {
         throw new Error(`Cannot get orders ${err}`)
     }
     };
-    async show(username: string): Promise<Order[]>{
-    try
-    {
-        //console.log("Called Order show");
-        const conn= await client.connect();
-        const sql= `SELECT * FROM orders_table where username=($1)`;
-        const result = await conn.query(sql,[username]);
-        conn.release();
-        return result.rows;
-    }catch(err){
-        throw new Error(`Cannot get oders ${err}`)
-    }
-    };
-    async create(Order: Order): Promise<Order>{
+    // async show(username: string): Promise<Order[]>{
+    // try
+    // {
+    //     //console.log("Called Order show");
+    //     const conn= await client.connect();
+    //     const sql= `SELECT * FROM orders_table where username=($1)`;
+    //     const result = await conn.query(sql,[username]);
+    //     conn.release();
+    //     return result.rows;
+    // }catch(err){
+    //     throw new Error(`Cannot get oders ${err}`)
+    // }
+    // };
+    async create(username: string,productId: number,quantity: number): Promise<Order>{
         try
         {
             const conn= await client.connect();
             //All new orders will be automatically placed as active
             const sql= `INSERT INTO orders_table (username,status) VALUES ($1,$2) RETURNING *`;
             //@ts-ignore
-            const result = await conn.query(sql,[Order.username,false]);
+            const result = await conn.query(sql,[username,false]);
+            const addProd=this.addProduct(result.rows[0].id,productId,quantity)
             conn.release();
             return result.rows[0];
         }catch(err){

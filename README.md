@@ -15,7 +15,7 @@
 ### Endpoints related to orders
 - Index route         : '/orders' [GET]       No need to send anything.
 - Show route          : '/orders/:username' [GET]  Send a valid authentication token.
-- Create Route        : '/orders' [POST] Send a JSON object having {"username":username}.
+- Create Route        : '/orders' [POST] Send a JSON object having {"username":username,"product_id":productId,"quantity":quantity}.
 - Add Product Route   : '/orders/:id/products' [POST] Send a JSON objet having {"product_id":productId,"quantity":quantity}.
 ### Tables
 - Table: **users_table**\

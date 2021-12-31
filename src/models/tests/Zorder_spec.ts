@@ -6,12 +6,9 @@ const request = supertest(app)
 
 const shopping = new Shopping();
 describe("Order Tests", ()=> {
-    afterAll(()=>{
+    //setTimeout(()=>{
         it("Should have index method", () => {
             expect(shopping.index).toBeDefined();
-        });
-        it("Should have show method", () => {
-            expect(shopping.show).toBeDefined();
         });
         it("Should have create method", () => {
             expect(shopping.create).toBeDefined();
@@ -19,8 +16,8 @@ describe("Order Tests", ()=> {
         it("Should have addProduct method", () => {
             expect(shopping.addProduct).toBeDefined();
         });
-        it("Create should add a order of id:1 name:Alpha10", async ()=> {
-            const result= await request.post('/orders').send({username:"Alpha10"});
+        it("Create should add a order of id:1 name:Alpha10 with 10 of product 1", async ()=> {
+            const result= await request.post('/orders').send({username:"Alpha10",product_id:1,quantity:5}).auth(Token, {type:'bearer'});
             expect(result.statusCode).toEqual(200);
         });
         it("Index should list all orders", async ()=> {
@@ -39,5 +36,5 @@ describe("Order Tests", ()=> {
             const result= await request.post('/orders/1/products').send({product_id:2,quantity:10}).auth(Token, {type:'bearer'});
             expect(result.statusCode).toEqual(200);
         });
-    });
+    //},500);
 });

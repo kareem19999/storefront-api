@@ -43,6 +43,7 @@ var order_1 = require("../models/order");
 var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 var checkNull_1 = __importDefault(require("../utilities/checkNull"));
 var checkNaN_1 = __importDefault(require("../utilities/checkNaN"));
+var dashboard_1 = require("../Services/dashboard");
 var shopping = new order_1.Shopping();
 var index = function (_req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var orders;
@@ -56,6 +57,7 @@ var index = function (_req, res) { return __awaiter(void 0, void 0, void 0, func
         }
     });
 }); };
+var dashboard = new dashboard_1.DashBoardQueries();
 var show = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var username, authorizationHeader, token, orders, err_1;
     return __generator(this, function (_a) {
@@ -76,7 +78,7 @@ var show = function (req, res) { return __awaiter(void 0, void 0, void 0, functi
             case 1:
                 _a.trys.push([1, 3, , 4]);
                 (0, checkNull_1["default"])([username]);
-                return [4 /*yield*/, shopping.show(username)];
+                return [4 /*yield*/, dashboard.ordersByUser(username)];
             case 2:
                 orders = _a.sent();
                 res.json(orders);
@@ -91,13 +93,15 @@ var show = function (req, res) { return __awaiter(void 0, void 0, void 0, functi
     });
 }); };
 var create = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var order, authorizationHeader, token, result, err_2;
+    var order, productId, quantity, authorizationHeader, token, result, err_2;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 order = {
                     username: req.body.username
                 };
+                productId = parseInt(req.body.product_id);
+                quantity = parseInt(req.body.quantity);
                 try {
                     authorizationHeader = req.headers.authorization;
                     token = authorizationHeader.split(' ')[1];
@@ -111,8 +115,9 @@ var create = function (req, res) { return __awaiter(void 0, void 0, void 0, func
                 _a.label = 1;
             case 1:
                 _a.trys.push([1, 3, , 4]);
-                (0, checkNull_1["default"])([order.username]);
-                return [4 /*yield*/, shopping.create(order)];
+                (0, checkNull_1["default"])([order.username, productId, quantity]);
+                (0, checkNaN_1["default"])([productId, quantity]);
+                return [4 /*yield*/, shopping.create(order.username, productId, quantity)];
             case 2:
                 result = _a.sent();
                 res.json(result);
@@ -180,7 +185,7 @@ var order_routes = function (app) {
     //console.log("try to connect");
     app.get('/orders', index);
     app.get('/orders/:username', verifyAuthToken, show);
-    app.post('/orders', create);
-    app.post('/orders/:id/products', addProduct);
+    app.post('/orders', verifyAuthToken, create);
+    app.post('/orders/:id/products', verifyAuthToken, addProduct);
 };
 exports["default"] = order_routes;

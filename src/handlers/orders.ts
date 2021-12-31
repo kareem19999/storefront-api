@@ -3,12 +3,14 @@ import {Order,Shopping} from '../models/order'
 import jwt from 'jsonwebtoken'
 import checkNull from '../utilities/checkNull';
 import checkNaN from '../utilities/checkNaN';
+import { DashBoardQueries } from '../Services/dashboard';
 const shopping= new Shopping();
 
 const index= async (_req: Request, res:Response) => {
     const orders= await shopping.index();
     res.json(orders);
 }
+const dashboard= new DashBoardQueries()
 const show = async (req: Request, res:Response) => {
     const username:string=req.params.username;
     try {
@@ -22,8 +24,9 @@ const show = async (req: Request, res:Response) => {
         return
     }
     try{
+        
         checkNull([username]);
-        const orders=await shopping.show(username);
+        const orders=await dashboard.ordersByUser(username);
         res.json(orders);
     }catch(err)
     {
@@ -36,6 +39,8 @@ const create = async (req: Request, res:Response) => {
     const order: Order={
         username :req.body.username
         };
+    const productId: number=parseInt(req.body.product_id);
+    const quantity: number=parseInt(req.body.quantity);
     try {
         const authorizationHeader = req.headers.authorization
         //@ts-ignore
@@ -47,8 +52,9 @@ const create = async (req: Request, res:Response) => {
         return
     }
     try {
-        checkNull([order.username]);
-        const result=await shopping.create(order);
+        checkNull([order.username,productId,quantity]);
+        checkNaN([productId,quantity])
+        const result=await shopping.create(order.username,productId,quantity);
         res.json(result);
     }catch(err){
         res.status(400);
@@ -98,8 +104,8 @@ const order_routes = ( app: express.Application)=>
     //console.log("try to connect");
     app.get('/orders',index);
     app.get('/orders/:username', verifyAuthToken, show);
-    app.post('/orders',create);
-    app.post('/orders/:id/products',addProduct)
+    app.post('/orders',verifyAuthToken,create);
+    app.post('/orders/:id/products',verifyAuthToken,addProduct)
 }
 
 export default order_routes;

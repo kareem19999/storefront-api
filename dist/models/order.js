@@ -69,34 +69,22 @@ var Shopping = /** @class */ (function () {
         });
     };
     ;
-    Shopping.prototype.show = function (username) {
+    // async show(username: string): Promise<Order[]>{
+    // try
+    // {
+    //     //console.log("Called Order show");
+    //     const conn= await client.connect();
+    //     const sql= `SELECT * FROM orders_table where username=($1)`;
+    //     const result = await conn.query(sql,[username]);
+    //     conn.release();
+    //     return result.rows;
+    // }catch(err){
+    //     throw new Error(`Cannot get oders ${err}`)
+    // }
+    // };
+    Shopping.prototype.create = function (username, productId, quantity) {
         return __awaiter(this, void 0, void 0, function () {
-            var conn, sql, result, err_2;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 3, , 4]);
-                        return [4 /*yield*/, database_1["default"].connect()];
-                    case 1:
-                        conn = _a.sent();
-                        sql = "SELECT * FROM orders_table where username=($1)";
-                        return [4 /*yield*/, conn.query(sql, [username])];
-                    case 2:
-                        result = _a.sent();
-                        conn.release();
-                        return [2 /*return*/, result.rows];
-                    case 3:
-                        err_2 = _a.sent();
-                        throw new Error("Cannot get oders ".concat(err_2));
-                    case 4: return [2 /*return*/];
-                }
-            });
-        });
-    };
-    ;
-    Shopping.prototype.create = function (Order) {
-        return __awaiter(this, void 0, void 0, function () {
-            var conn, sql, result, err_3;
+            var conn, sql, result, addProd, err_2;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -105,14 +93,15 @@ var Shopping = /** @class */ (function () {
                     case 1:
                         conn = _a.sent();
                         sql = "INSERT INTO orders_table (username,status) VALUES ($1,$2) RETURNING *";
-                        return [4 /*yield*/, conn.query(sql, [Order.username, false])];
+                        return [4 /*yield*/, conn.query(sql, [username, false])];
                     case 2:
                         result = _a.sent();
+                        addProd = this.addProduct(result.rows[0].id, productId, quantity);
                         conn.release();
                         return [2 /*return*/, result.rows[0]];
                     case 3:
-                        err_3 = _a.sent();
-                        throw new Error("Cannot create order ".concat(err_3));
+                        err_2 = _a.sent();
+                        throw new Error("Cannot create order ".concat(err_2));
                     case 4: return [2 /*return*/];
                 }
             });
@@ -121,7 +110,7 @@ var Shopping = /** @class */ (function () {
     ;
     Shopping.prototype.addProduct = function (orderId, productId, quantity) {
         return __awaiter(this, void 0, void 0, function () {
-            var conn, sql, result, err_4;
+            var conn, sql, result, err_3;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -136,8 +125,8 @@ var Shopping = /** @class */ (function () {
                         conn.release();
                         return [2 /*return*/, result.rows[0]];
                     case 3:
-                        err_4 = _a.sent();
-                        throw new Error("Cannot add products to order ".concat(err_4));
+                        err_3 = _a.sent();
+                        throw new Error("Cannot add products to order ".concat(err_3));
                     case 4: return [2 /*return*/];
                 }
             });
