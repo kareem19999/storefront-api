@@ -8,7 +8,7 @@
     "tsc": "tsc",
     "migrate-down-all-test": "db-migrate down --env test && db-migrate down --env test && db-migrate down --env test && db-migrate down --env test",
     "migrate-down-all-dev": "db-migrate down && db-migrate down && db-migrate down && db-migrate down",
-    "test": "set ENV=test& db-migrate up:all --env test && jasmine-ts  && npm run migrate-down-all-test"
+    "test": "npm run migrate-down-all-test && set ENV=test& db-migrate up:all --env test && jasmine-ts  && npm run migrate-down-all-test"
   },
   "author": "Udacity",
   "license": "ISC",

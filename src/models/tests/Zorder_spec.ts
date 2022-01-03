@@ -1,9 +1,10 @@
 import { Order, Shopping} from '../order';
 import supertest from 'supertest';
 import app from '../../server'
+import { DashBoardQueries } from '../../Services/dashboard';
 const Token="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjpudWxsLCJpYXQiOjE2NDA1NTE3Nzd9.fwNVS3XVYvLtyuynePvDneqDmIqM-woBKP3eYD7wxj0" //This is token generated from signing in admin
 const request = supertest(app)
-
+const dashboard= new DashBoardQueries();
 const shopping = new Shopping();
 describe("Order Tests", ()=> {
     //setTimeout(()=>{
@@ -63,6 +64,10 @@ describe("Order Tests", ()=> {
         it("Route Test: Show should show orders for Alpha10", async ()=> {
             const result= await request.get('/orders/Alpha10').auth(Token, {type:'bearer'});
             expect(result.body).toEqual([{username: 'Alpha10',order_id: 1,status: false,product_id: 1,quantity: 5,name:"Cookies",unit_price: 1.99},{ username: "Alpha10", order_id: 1, status: false, product_id: 2, quantity: 10, name: "Apples", unit_price: 0.99 },{ username: "Alpha10", order_id: 1, status: false, product_id: 2, quantity: 25, name: "Apples", unit_price: 0.99 }]);
+        });
+        it("DashBoard Function Test: Show should show orders for Alpha10", async ()=> {
+            const result= await dashboard.ordersByUser('Alpha10');
+            expect(result).toEqual([{username: 'Alpha10',order_id: 1,status: false,product_id: 1,quantity: 5,name:"Cookies",unit_price: 1.99},{ username: "Alpha10", order_id: 1, status: false, product_id: 2, quantity: 10, name: "Apples", unit_price: 0.99 },{ username: "Alpha10", order_id: 1, status: false, product_id: 2, quantity: 25, name: "Apples", unit_price: 0.99 }]);
         });
         //Show can be only done with route testing as it uses dashboard query not model
     //},500);
